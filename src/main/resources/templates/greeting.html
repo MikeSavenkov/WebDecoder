@@ -3,9 +3,31 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+    }
+</style>
 </head>
 <body>
-<p th:text="'Hello, ' + ${name} + '!'" />
-<p th:text="'A: ' + ${count}" />
+    <p th:text="'Hello, ' + ${name} + '!'" />
+    <div class="container">
+        <table>
+            <tr>
+                <th>№</th>
+                <th>буква</th>
+                <!--<th>частота</th>-->
+                <!--<th>Доля</th>-->
+                <!--<th>Доля с пробелом</th>-->
+            </tr>
+            <th:block th:each="listNumbers, stat : ${listNumbers}">
+                <tr>
+                    <td th:text="${listNumbers}"> </td>
+                    <td th:text="${listChars.get(stat.index)}"> </td>
+                </tr>
+            </th:block>
+        </table>
+    </div>
 </body>
 </html>
