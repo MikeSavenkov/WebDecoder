@@ -74,7 +74,7 @@ class StatisticChars {
 				for (int i = 1040; i < 1072; i++) {
 						char symbol = (char) i;
 						int countChars = frequency.frequency(String.valueOf(symbol), textUpperCase);
-						double probability = new BigDecimal((double) countChars / (textSizeWithoutSpaces())).setScale(4, RoundingMode.UP).doubleValue();
+						double probability = new BigDecimal((double) countChars * 100 / (textSizeWithoutSpaces())).setScale(4, RoundingMode.UP).doubleValue();
 						listProbability.add(probability);
 				}
 				return listProbability;
@@ -86,7 +86,7 @@ class StatisticChars {
 				for (int i = 1040; i < 1072; i++) {
 						char symbol = (char) i;
 						int countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
-						double probabilitySpace = new BigDecimal((double) countChar / (textSizeWithSpaces)).setScale(4, RoundingMode.UP).doubleValue();
+						double probabilitySpace = new BigDecimal((double) countChar * 100 / (textSizeWithSpaces)).setScale(4, RoundingMode.UP).doubleValue();
 						listProbabilitySpace.add(probabilitySpace);
 				}
 				return listProbabilitySpace;
