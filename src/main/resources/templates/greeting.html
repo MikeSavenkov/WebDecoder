@@ -8,6 +8,12 @@
         border: 1px solid black;
         border-collapse: collapse;
     }
+    th, td {
+        padding: 5px;
+    }
+    th {
+        text-align: center;
+    }
 </style>
 </head>
 <body>
@@ -31,6 +37,9 @@
                 </tr>
             </th:block>
         </table>
+        <h3 th:text="'количество пробелов: ' + ${countSpace}"></h3>
+        <h3 th:text="'количество символов без пробела: ' + ${textSizeWithoutSpaces}"></h3>
+        <h3 th:text="'количество символов с пробелами: ' + ${textSizeWithSpaces}"></h3>
     </div>
 </body>
 </html>

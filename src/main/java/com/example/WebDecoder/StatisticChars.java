@@ -89,7 +89,7 @@ class StatisticChars {
 				return listProbabilitySpace;
 		}
 
-		private int textSizeWithoutSpaces() {
+		int textSizeWithoutSpaces() {
 
 				int countChar;
 				int textSizeWithoutSpaces = 0;
@@ -100,5 +100,11 @@ class StatisticChars {
 				}
 				return textSizeWithoutSpaces;
 		}
+
+	int countSpaces() {
+
+		return frequency.frequency(" ", textUpperCase);
+
+	}
 
 }
