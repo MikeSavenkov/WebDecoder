@@ -13,14 +13,10 @@ import java.util.List;
 public class GreetingController {
 
     @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false, defaultValue="World")
-                                         String name,
-                                         Model model) throws IOException {
+    public String greeting(@RequestParam(name="name", required=false) String name, Model model) throws IOException {
 
         StatisticChars statisticChars = new StatisticChars();
 
-
-        List<Integer> listNumbers = statisticChars.statisticsChars();
         List<Character> listChars = statisticChars.characterList();
         List<Integer> listFrequency = statisticChars.frequencyList();
         List<Double> listProbability = statisticChars.probabilityList();
@@ -28,7 +24,6 @@ public class GreetingController {
 	      int countSpace = statisticChars.countSpaces();
 
         model.addAttribute("name", name);
-        model.addAttribute("listNumbers", listNumbers);
         model.addAttribute("listChars", listChars);
         model.addAttribute("listFrequency", listFrequency);
         model.addAttribute("listProbability", listProbability);
@@ -36,6 +31,8 @@ public class GreetingController {
         model.addAttribute("countSpace", countSpace);
         model.addAttribute("textSizeWithoutSpaces", statisticChars.textSizeWithoutSpaces());
 	      model.addAttribute("textSizeWithSpaces", statisticChars.textSizeWithoutSpaces() + countSpace);
+	      model.addAttribute("indexMatch", statisticChars.indexMatch());
+	      model.addAttribute("indexMatchSpace", statisticChars.indexMatchSpace());
 
 
         return "greeting";

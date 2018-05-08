@@ -27,10 +27,10 @@
                 <th>Доля</th>
                 <th>Доля с пробелом</th>
             </tr>
-            <th:block th:each="listNumbers, stat : ${listNumbers}">
+            <th:block th:each="listChars, stat : ${listChars}">
                 <tr>
-                    <td th:text="${listNumbers}"> </td>
-                    <td th:text="${listChars.get(stat.index)}"> </td>
+                    <td th:text="${stat.count}"> </td>
+                    <td th:text="${stat.current}"> </td>
                     <td th:text="${listFrequency.get(stat.index)}"> </td>
                     <td th:text="${listProbability.get(stat.index)}"> </td>
                     <td th:text="${listProbabilitySpace.get(stat.index)}"> </td>
@@ -40,6 +40,8 @@
         <h3 th:text="'количество пробелов: ' + ${countSpace}"></h3>
         <h3 th:text="'количество символов без пробела: ' + ${textSizeWithoutSpaces}"></h3>
         <h3 th:text="'количество символов с пробелами: ' + ${textSizeWithSpaces}"></h3>
+        <h3 th:text="'индекс совпадений: ' + ${indexMatch}"></h3>
+        <h3 th:text="'индекс совпадений с пробелами: ' + ${indexMatchSpace}"></h3>
     </div>
 </body>
 </html>

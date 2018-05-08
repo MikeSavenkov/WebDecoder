@@ -14,32 +14,35 @@ class StatisticChars {
 		private String text = reader.readFile("..\\..\\Desktop\\allTexts.txt", StandardCharsets.UTF_8);
 		private String textUpperCase = text.toUpperCase();
 		private int countSpace = frequency.frequency(" ", textUpperCase);
-		private int textSizeWithSpaces = textSizeWithoutSpaces()  + countSpace;
+		private long textSizeWithSpaces = textSizeWithoutSpaces()  + countSpace;
 
 		StatisticChars() throws IOException {
 		}
 
-		List<Integer> statisticsChars() throws IOException {
-
-				int countChar = 0;
-				List<Integer> listNumbers = new ArrayList<>();
-				int id = 0;
-				float countIndex, countIndexSpace, index = 0, indexSpace = 0;
+		double indexMatch() {
+				int countChar;
+				float indexMatch = 0, index;
 
 				for(int i = 1040; i < 1072; i++) {
-
 						char symbol = (char) i;
 						countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
-						id++;
-
-						countIndex = ((float) countChar * (countChar - 1)) / (textSizeWithoutSpaces() * (textSizeWithoutSpaces() - 1));
-						index = index + countIndex;
-						countIndexSpace = ((float) countChar * (countChar - 1)) / (textSizeWithSpaces * (textSizeWithSpaces - 1));
-						indexSpace = indexSpace + countIndexSpace;
-
-						listNumbers.add(id);
+						index = ((float) countChar * (countChar - 1)) / (textSizeWithoutSpaces() * (textSizeWithoutSpaces() - 1));
+						indexMatch = indexMatch + index;
 				}
-				return listNumbers;
+
+				return new BigDecimal(indexMatch).setScale(4, RoundingMode.UP).doubleValue();
+		}
+
+		double indexMatchSpace() {
+				int countChar;
+				float indexMatchSpace = 0, indexSpace;
+				for(int i = 1040; i < 1072; i++) {
+						char symbol = (char) i;
+						countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						indexSpace = ((float) countChar * (countChar - 1)) / (textSizeWithSpaces * (textSizeWithSpaces - 1));
+						indexMatchSpace = indexMatchSpace + indexSpace;
+				}
+				return new BigDecimal(indexMatchSpace).setScale(5, RoundingMode.UP).doubleValue();
 		}
 
 
@@ -89,7 +92,7 @@ class StatisticChars {
 				return listProbabilitySpace;
 		}
 
-		int textSizeWithoutSpaces() {
+		long textSizeWithoutSpaces() {
 
 				int countChar;
 				int textSizeWithoutSpaces = 0;
