@@ -7,58 +7,37 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatisticChars {
+class StatisticChars {
 
-		public List<Integer> statisticsChars() throws IOException {
+		private ReaderTextFile reader = new ReaderTextFile();
+		private Frequency frequency = new Frequency();
+		private String text = reader.readFile("..\\..\\Desktop\\allTexts.txt", StandardCharsets.UTF_8);
+		private String textUpperCase = text.toUpperCase();
+		private int countSpace = frequency.frequency(" ", textUpperCase);
+		private int textSizeWithSpaces = textSizeWithoutSpaces()  + countSpace;
 
-				Frequency frequency = new Frequency();
-				ReaderTextFile reader = new ReaderTextFile();
-				String text = reader.readFile("..\\..\\Desktop\\allTexts.txt", StandardCharsets.UTF_8);
-				String textUpperCase = text.toUpperCase();
+		StatisticChars() throws IOException {
+		}
 
-				int textSizeWithoutSpaces = 0;
-				int textSizeWithSpaces = 0;
-				int countSpace = frequency.frequency(" ", textUpperCase);
-				int countChars = 0;
+		List<Integer> statisticsChars() throws IOException {
 
+				int countChar = 0;
 				List<Integer> listNumbers = new ArrayList<>();
-				List<Integer> listFrequency = new ArrayList<>();
-				List<Double> listProbability = new ArrayList<>();
-				List<Double> listProbabilitySpace = new ArrayList<>();
-
-
 				int id = 0;
-				double probability, probabilityPlusSpace;
 				float countIndex, countIndexSpace, index = 0, indexSpace = 0;
-
-
-				textSizeWithSpaces = textSizeWithoutSpaces + countSpace;
 
 				for(int i = 1040; i < 1072; i++) {
 
-						id++;
 						char symbol = (char) i;
-						countChars = frequency.frequency(String.valueOf(symbol), textUpperCase);
-						textSizeWithoutSpaces = textSizeWithoutSpaces  + countChars;
+						countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						id++;
 
-						probability = new BigDecimal((double) countChars / (textSizeWithoutSpaces)).setScale(4, RoundingMode.UP).doubleValue();
-						probabilityPlusSpace = new BigDecimal((double) countChars / (textSizeWithSpaces)).setScale(4, RoundingMode.UP).doubleValue();
-
-						countIndex = ((float) countChars * (countChars - 1)) / (textSizeWithoutSpaces * (textSizeWithoutSpaces - 1));
+						countIndex = ((float) countChar * (countChar - 1)) / (textSizeWithoutSpaces() * (textSizeWithoutSpaces() - 1));
 						index = index + countIndex;
-						countIndexSpace = ((float) countChars * (countChars - 1)) / (textSizeWithSpaces * (textSizeWithSpaces - 1));
+						countIndexSpace = ((float) countChar * (countChar - 1)) / (textSizeWithSpaces * (textSizeWithSpaces - 1));
 						indexSpace = indexSpace + countIndexSpace;
 
-
-						listFrequency.add(countChars);
-						listProbability.add(probability);
-						listProbabilitySpace.add(probabilityPlusSpace);
 						listNumbers.add(id);
-
-						if (i == 1071) {
-								textSizeWithSpaces = textSizeWithoutSpaces + countSpace;
-						}
-
 				}
 				return listNumbers;
 		}
@@ -72,6 +51,54 @@ public class StatisticChars {
 						listChars.add(symbol);
 				}
 				return listChars;
+		}
+
+		List<Integer> frequencyList() {
+
+				List<Integer> listFrequency = new ArrayList<>();
+
+				for (int i = 1040; i < 1072; i++) {
+						char symbol = (char) i;
+						int count = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						listFrequency.add(count);
+				}
+				return listFrequency;
+		}
+
+		List<Double> probabilityList() {
+
+				List<Double> listProbability = new ArrayList<>();
+				for (int i = 1040; i < 1072; i++) {
+						char symbol = (char) i;
+						int countChars = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						double probability = new BigDecimal((double) countChars / (textSizeWithoutSpaces())).setScale(4, RoundingMode.UP).doubleValue();
+						listProbability.add(probability);
+				}
+				return listProbability;
+		}
+
+		List<Double> probabilitySpaceList() {
+
+				List<Double> listProbabilitySpace = new ArrayList<>();
+				for (int i = 1040; i < 1072; i++) {
+						char symbol = (char) i;
+						int countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						double probabilitySpace = new BigDecimal((double) countChar / (textSizeWithSpaces)).setScale(4, RoundingMode.UP).doubleValue();
+						listProbabilitySpace.add(probabilitySpace);
+				}
+				return listProbabilitySpace;
+		}
+
+		private int textSizeWithoutSpaces() {
+
+				int countChar;
+				int textSizeWithoutSpaces = 0;
+				for (int i = 1040; i < 1072; i++) {
+						char symbol = (char) i;
+						countChar = frequency.frequency(String.valueOf(symbol), textUpperCase);
+						textSizeWithoutSpaces = textSizeWithoutSpaces + countChar;
+				}
+				return textSizeWithoutSpaces;
 		}
 
 }

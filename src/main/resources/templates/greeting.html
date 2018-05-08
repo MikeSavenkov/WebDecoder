@@ -17,14 +17,17 @@
             <tr>
                 <th>№</th>
                 <th>буква</th>
-                <!--<th>частота</th>-->
-                <!--<th>Доля</th>-->
-                <!--<th>Доля с пробелом</th>-->
+                <th>частота</th>
+                <th>Доля</th>
+                <th>Доля с пробелом</th>
             </tr>
             <th:block th:each="listNumbers, stat : ${listNumbers}">
                 <tr>
                     <td th:text="${listNumbers}"> </td>
                     <td th:text="${listChars.get(stat.index)}"> </td>
+                    <td th:text="${listFrequency.get(stat.index)}"> </td>
+                    <td th:text="${listProbability.get(stat.index)}"> </td>
+                    <td th:text="${listProbabilitySpace.get(stat.index)}"> </td>
                 </tr>
             </th:block>
         </table>

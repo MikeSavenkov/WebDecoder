@@ -21,10 +21,16 @@ public class GreetingController {
 
         List<Integer> listNumbers = statisticChars.statisticsChars();
         List<Character> listChars = statisticChars.characterList();
+        List<Integer> listFrequency = statisticChars.frequencyList();
+        List<Double> listProbability = statisticChars.probabilityList();
+	      List<Double> listProbabilitySpace = statisticChars.probabilitySpaceList();
 
         model.addAttribute("name", name);
         model.addAttribute("listNumbers", listNumbers);
         model.addAttribute("listChars", listChars);
+        model.addAttribute("listFrequency", listFrequency);
+        model.addAttribute("listProbability", listProbability);
+        model.addAttribute("listProbabilitySpace", listProbabilitySpace);
 
         return "greeting";
     }
