@@ -104,10 +104,14 @@ class StatisticChars {
 				return textSizeWithoutSpaces;
 		}
 
-	int countSpaces() {
+		int countSpaces() {
 
-		return frequency.frequency(" ", textUpperCase);
+				return frequency.frequency(" ", textUpperCase);
 
-	}
+		}
+
+		String allTexts() {
+				return textUpperCase;
+		}
 
 }
