@@ -7,5 +7,14 @@
 <body>
     <p th:text="${decodedText}" />
     <a href="#" th:href="@{/decoding}">Back</a>
+
+    <form method="POST" action="#" th:action="@{/decoding/replaceSymbol}">
+
+        <input type="text" name="sourceSymbol" placeholder="Исходная буква"/>
+        <input type="text" name="targetSymbol" placeholder="Заменяемая буква"/>
+        <input type="hidden" name="decodedText" th:value="${decodedText}"/>
+        <button type="submit" th:text="Ok"/>
+
+    </form>
 </body>
 </html>
