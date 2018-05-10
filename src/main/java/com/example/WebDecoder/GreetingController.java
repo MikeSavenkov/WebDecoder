@@ -13,6 +13,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
+
 @Controller
 public class GreetingController {
 
@@ -113,6 +115,24 @@ public class GreetingController {
     	  return "simpleReplacement";
     }
 
+    @PostMapping("/decoding/replaceSymbol")
+    String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol,
+                         @RequestParam("targetSymbol") char targetSymbol,
+                         @RequestParam("decodedText") String decodedText,
+                         Model model) {
+
+	      char[] charArray = decodedText.toCharArray();
+	      for (int i = 0; i < charArray.length; i++) {
+		        if (charArray[i] == sourceSymbol) {
+		        	  charArray[i] = targetSymbol;
+		        }
+	      }
+	      String newDecodedText = new String(charArray);
+	      model.addAttribute("text", newDecodedText);
+
+    	  return "replaceSymbol";
+
+    }
 
 
 }
