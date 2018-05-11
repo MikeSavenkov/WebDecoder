@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -99,6 +101,15 @@ public class GreetingController {
 				    chars.add(key);
 		    }
 
+	      int countSymbols = 0;
+	      for (int i = 1040; i < 1072; i++) {
+		        char symbol = (char) i;
+		        int count = frequency.frequency(String.valueOf(symbol), encodingText);
+		        countSymbols += count;
+	      }
+
+	      double frequencySymbol = new BigDecimal((double) (unsortMapEncoded.get(charsEncoded.get(0)) * 100) / (countSymbols)).setScale(4, RoundingMode.UP).doubleValue();
+
 		    char[] charArray = encodingText.toCharArray();
 		    for (int k = 0; k < charArray.length; k++) {
 				    for (int m = 0; m < chars.size(); m++) {
@@ -111,6 +122,9 @@ public class GreetingController {
 		    String decodedText = new String(charArray);
 
 	      model.addAttribute("decodedText", decodedText);
+	      model.addAttribute("chars", chars);
+	      model.addAttribute("charsEncoded", charsEncoded);
+	      model.addAttribute("frequencySymbol", frequencySymbol);
 
     	  return "simpleReplacement";
     }

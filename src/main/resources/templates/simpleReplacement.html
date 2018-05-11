@@ -5,13 +5,22 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
+    <h3>массив букв в порядке убывания по частоте в текстах общей направленности</h3>
+    <p th:text="${chars}" />
+    <h3>массив букв в порядке убывания по частоте в зашифрованном тексте</h3>
+    <p th:text="${charsEncoded}" />
+
+    <h3>процент наиболее часто встречающейся буквы</h3>
+    <p th:text="${frequencySymbol} + '%'" />
+
+    <h3>Расшифрованный текст после замены букв</h3>
     <p th:text="${decodedText}" />
     <a href="#" th:href="@{/decoding}">Back</a>
 
     <form method="POST" action="#" th:action="@{/decoding/replaceSymbol}">
 
         <input type="text" name="sourceSymbol" placeholder="Исходная буква"/>
-        <input type="text" name="targetSymbol" placeholder="Заменяемая буква"/>
+        <input type="text" name="targetSymbol" placeholder="Замена"/>
         <input type="hidden" name="decodedText" th:value="${decodedText}"/>
         <button type="submit" th:text="Ok"/>
 
