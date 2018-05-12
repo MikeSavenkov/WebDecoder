@@ -15,21 +15,18 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
-
 @Controller
 public class GreetingController {
 
     @GetMapping("/greeting")
     public String greeting(@RequestParam(name="name", required=false) String name, Model model) throws IOException {
 
-        StatisticChars statisticChars = new StatisticChars();
-				name = "lol";
-        List<Character> listChars = statisticChars.characterList();
-        List<Integer> listFrequency = statisticChars.frequencyList();
-        List<Double> listProbability = statisticChars.probabilityList();
-	      List<Double> listProbabilitySpace = statisticChars.probabilitySpaceList();
-	      int countSpace = statisticChars.countSpaces();
+        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+        List<Character> listChars = statisticTextsIT.characterList();
+        List<Integer> listFrequency = statisticTextsIT.frequencyList();
+        List<Double> listProbability = statisticTextsIT.probabilityList();
+        List<Double> listProbabilitySpace = statisticTextsIT.probabilitySpaceList();
+        int countSpace = statisticTextsIT.countSpaces();
 
         model.addAttribute("name", name);
         model.addAttribute("listChars", listChars);
@@ -37,10 +34,10 @@ public class GreetingController {
         model.addAttribute("listProbability", listProbability);
         model.addAttribute("listProbabilitySpace", listProbabilitySpace);
         model.addAttribute("countSpace", countSpace);
-        model.addAttribute("textSizeWithoutSpaces", statisticChars.textSizeWithoutSpaces());
-        model.addAttribute("textSizeWithSpaces", statisticChars.textSizeWithoutSpaces() + countSpace);
-        model.addAttribute("indexMatch", statisticChars.indexMatch());
-        model.addAttribute("indexMatchSpace", statisticChars.indexMatchSpace());
+        model.addAttribute("textSizeWithoutSpaces", statisticTextsIT.textSizeWithoutSpaces());
+        model.addAttribute("textSizeWithSpaces", statisticTextsIT.textSizeWithoutSpaces() + countSpace);
+        model.addAttribute("indexMatch", statisticTextsIT.indexMatch());
+        model.addAttribute("indexMatchSpace", statisticTextsIT.indexMatchSpace());
 
 
         return "greeting";
@@ -50,83 +47,44 @@ public class GreetingController {
     public String decoding(Model model) throws IOException {
 
 
-        Decoder decoder = new Decoder();
-        String text = decoder.encodingText();
+        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+        String text = statisticTextEncoded.encodedText();
         model.addAttribute("encodingText", text);
         return "decoding";
     }
 
     @GetMapping("/decoding/simpleReplacement")
-		public String simpleReplacement(Model model) throws IOException {
+    public String simpleReplacement(Model model) throws IOException {
 
-	      Decoder decoder = new Decoder();
-	      String encodingText = decoder.encodingText();
+        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+        String encodedText = statisticTextEncoded.encodedText();
 
-	      Frequency frequency = new Frequency();
-	      StatisticChars statisticChars = new StatisticChars();
+        Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
-		    int countSpace = statisticChars.countSpaces();
-		    int countComma = frequency.frequency(",", encodingText);
+        List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
+        List<Character> chars = statisticTextsIT.chars();
 
-		    Map<Character, Integer> unsortMap = new HashMap<>();
-		    Map<Character, Integer> unsortMapEncoded = new HashMap<>();
+        double frequencySymbol = new BigDecimal((double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) /
+                (statisticTextEncoded.countSymbols())).setScale(4, RoundingMode.UP).doubleValue();
 
-		    unsortMap.put(' ', countSpace);
-		    unsortMapEncoded.put(',', countComma);
+        char[] charArray = encodedText.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            for (int j = 0; j < chars.size(); j++) {
+                if (charArray[i] == charsEncoded.get(j)) {
+                    charArray[i] = chars.get(j);
+                    break;
+                }
+            }
+        }
+        String decodedText = new String(charArray);
 
-	      for (int i = 1040; i < 1072; i++) {
+        model.addAttribute("decodedText", decodedText);
+        model.addAttribute("chars", chars);
+        model.addAttribute("charsEncoded", charsEncoded);
+        model.addAttribute("frequencySymbol", frequencySymbol);
 
-	      	  char symbol = (char) i;
-	      	  unsortMap.put(symbol, frequency.frequency(String.valueOf(symbol), statisticChars.allTexts()));
-						unsortMapEncoded.put(symbol, frequency.frequency(String.valueOf(symbol), encodingText));
-	      }
-
-		    final Map<Character, Integer> sortMap = new LinkedHashMap<>();
-		    unsortMap.entrySet().stream()
-		             .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
-		             .forEachOrdered(x -> sortMap.put(x.getKey(), x.getValue()));
-
-		    final Map<Character, Integer> sortMapEncoded = new LinkedHashMap<>();
-		    unsortMapEncoded.entrySet().stream()
-		                    .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
-		                    .forEachOrdered(x -> sortMapEncoded.put(x.getKey(), x.getValue()));
-
-		    List<Character> charsEncoded = new ArrayList<>();
-		    for (Character key: sortMapEncoded.keySet()) {
-				    charsEncoded.add(key);
-		    }
-
-		    List<Character> chars = new ArrayList<>();
-		    for (Character key: sortMap.keySet()) {
-				    chars.add(key);
-		    }
-
-	      int countSymbols = 0;
-	      for (int i = 1040; i < 1072; i++) {
-		        char symbol = (char) i;
-		        int count = frequency.frequency(String.valueOf(symbol), encodingText);
-		        countSymbols += count;
-	      }
-
-	      double frequencySymbol = new BigDecimal((double) (unsortMapEncoded.get(charsEncoded.get(0)) * 100) / (countSymbols)).setScale(4, RoundingMode.UP).doubleValue();
-
-		    char[] charArray = encodingText.toCharArray();
-		    for (int k = 0; k < charArray.length; k++) {
-				    for (int m = 0; m < chars.size(); m++) {
-						    if (charArray[k] == charsEncoded.get(m)) {
-								    charArray[k] = chars.get(m);
-								    break;
-						    }
-				    }
-		    }
-		    String decodedText = new String(charArray);
-
-	      model.addAttribute("decodedText", decodedText);
-	      model.addAttribute("chars", chars);
-	      model.addAttribute("charsEncoded", charsEncoded);
-	      model.addAttribute("frequencySymbol", frequencySymbol);
-
-    	  return "simpleReplacement";
+        return "simpleReplacement";
     }
 
     @PostMapping("/decoding/replaceSymbol")
@@ -145,8 +103,5 @@ public class GreetingController {
 	      model.addAttribute("text", newDecodedText);
 
     	  return "replaceSymbol";
-
     }
-
-
 }
