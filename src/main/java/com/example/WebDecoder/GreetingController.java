@@ -91,17 +91,65 @@ public class GreetingController {
     String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol,
                          @RequestParam("targetSymbol") char targetSymbol,
                          @RequestParam("decodedText") String decodedText,
-                         Model model) {
+                         Model model) throws IOException {
+        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
 
-	      char[] charArray = decodedText.toCharArray();
-	      for (int i = 0; i < charArray.length; i++) {
-		        if (charArray[i] == sourceSymbol) {
-		        	  charArray[i] = targetSymbol;
-		        }
-	      }
-	      String newDecodedText = new String(charArray);
-	      model.addAttribute("text", newDecodedText);
+        Frequency frequency = new Frequency();
+        Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
-    	  return "replaceSymbol";
+
+//	      char[] charArray = decodedText.toCharArray();
+//	      for (int i = 0; i < charArray.length; i++) {
+//		        if (charArray[i] == sourceSymbol) {
+//		        	  charArray[i] = targetSymbol;
+//		        }
+//	      }
+        String encodedText = statisticTextEncoded.encodedText();
+
+        Integer freqSourceSymbol = frequency.frequency(String.valueOf(sourceSymbol), decodedText);
+        Integer freqTargetSymbol = frequency.frequency(String.valueOf(targetSymbol), decodedText);
+
+        Character symbol1 = ' ';
+        Character symbol2 = ' ';
+
+        //ищем соответствие букв по частоте в зашифрованном тексте
+        for (Map.Entry entry : sortMapEncoded.entrySet()) {
+            if (freqSourceSymbol == entry.getValue()) {
+                symbol1 = (char) entry.getKey();// 'Н'
+            }
+            if (freqTargetSymbol == entry.getValue()) {
+                symbol2 = (char) entry.getKey();  // 'Е'
+            }
+        }
+
+        //меняем value местами
+        sortMapEncoded.replace(symbol1, freqTargetSymbol);
+        sortMapEncoded.replace(symbol2, freqSourceSymbol);
+
+        //сортируем
+        final Map<Character, Integer> sortMap = new LinkedHashMap<>();
+        sortMapEncoded.entrySet().stream()
+                .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
+                .forEachOrdered(x -> sortMap.put(x.getKey(), x.getValue()));
+
+
+        List<Character> chars = statisticTextsIT.chars();
+        List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
+
+
+        char[] charArray = encodedText.toCharArray();
+        for (int i = 0; i < charArray.length; i++) {
+            for (int j = 0; j < chars.size(); j++) {
+                if (charArray[i] == charsEncoded.get(j)) {
+                    charArray[i] = chars.get(j);
+                    break;
+                }
+            }
+        }
+
+        String newDecodedText = new String(charArray);
+        model.addAttribute("text", newDecodedText);
+        return "replaceSymbol";
     }
 }
