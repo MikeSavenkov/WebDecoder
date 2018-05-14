@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>replaceSymbol</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+  <body>
+    <h3>текст до замены</h3>
+    <p th:text="${oldText}"></p>
+    <h3>текст после замены [[${sourceSymbol}]] на [[${targetSymbol}]]</h3>
+    <p th:text="${text}"></p>
+    <a href="#" th:href="@{/decoding/simpleReplacement}">Back</a>
+
+  </body>
+</html>
