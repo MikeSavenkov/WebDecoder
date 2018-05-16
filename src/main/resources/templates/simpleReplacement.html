@@ -10,8 +10,14 @@
     <h3>массив букв в порядке убывания по частоте в зашифрованном тексте</h3>
     <p th:text="${charsEncoded}" />
 
+    <h3>Map в зашифрованном тексте</h3>
+    <p th:text="${sortMapEncoded}" />
+
     <h3>процент наиболее часто встречающейся буквы</h3>
     <p th:text="${frequencySymbol} + '%'" />
+
+    <h3>Зашифрованный текст</h3>
+    <p style="word-wrap: break-word" th:text="${encodedText}" />
 
     <h3>Расшифрованный текст после замены букв</h3>
     <p th:text="${decodedText}" />

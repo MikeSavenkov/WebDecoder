@@ -7,7 +7,7 @@ import java.util.*;
 class StatisticTextEncoded {
 
     private ReaderTextFile reader = new ReaderTextFile();
-    private String encodedText = reader.readFile("..\\..\\Desktop\\encoded.txt", StandardCharsets.UTF_8);
+    private String encodedText = reader.readFile("..\\..\\Desktop\\encoded2.txt", StandardCharsets.UTF_8);
     private Frequency frequency = new Frequency();
 
     StatisticTextEncoded() throws IOException {
@@ -53,5 +53,9 @@ class StatisticTextEncoded {
             charsEncoded.add(key);
         }
         return charsEncoded;
+    }
+
+    LinkedHashMap<Character, Integer> map(LinkedHashMap<Character, Integer> map) {
+        return map;
     }
 }

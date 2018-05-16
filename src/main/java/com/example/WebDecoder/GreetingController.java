@@ -16,162 +16,175 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.alibaba.fastjson.JSON;
 
 @Controller
-public class GreetingController {
+public class GreetingController
+{
 
-		Gson GSON = new Gson();
+	Gson GSON = new Gson();
 
-    @GetMapping("/greeting")
-    public String greeting(@RequestParam(name="name", required=false) String name, Model model) throws IOException {
+	@GetMapping("/greeting")
+	public String greeting(@RequestParam(name = "name", required = false) String name, Model model) throws IOException
+	{
 
-        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
-        List<Character> listChars = statisticTextsIT.characterList();
-        List<Integer> listFrequency = statisticTextsIT.frequencyList();
-        List<Double> listProbability = statisticTextsIT.probabilityList();
-        List<Double> listProbabilitySpace = statisticTextsIT.probabilitySpaceList();
-        int countSpace = statisticTextsIT.countSpaces();
+		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+		List<Character> listChars = statisticTextsIT.characterList();
+		List<Integer> listFrequency = statisticTextsIT.frequencyList();
+		List<Double> listProbability = statisticTextsIT.probabilityList();
+		List<Double> listProbabilitySpace = statisticTextsIT.probabilitySpaceList();
+		int countSpace = statisticTextsIT.countSpaces();
 
-        model.addAttribute("name", name);
-        model.addAttribute("listChars", listChars);
-        model.addAttribute("listFrequency", listFrequency);
-        model.addAttribute("listProbability", listProbability);
-        model.addAttribute("listProbabilitySpace", listProbabilitySpace);
-        model.addAttribute("countSpace", countSpace);
-        model.addAttribute("textSizeWithoutSpaces", statisticTextsIT.textSizeWithoutSpaces());
-        model.addAttribute("textSizeWithSpaces", statisticTextsIT.textSizeWithoutSpaces() + countSpace);
-        model.addAttribute("indexMatch", statisticTextsIT.indexMatch());
-        model.addAttribute("indexMatchSpace", statisticTextsIT.indexMatchSpace());
+		model.addAttribute("name", name);
+		model.addAttribute("listChars", listChars);
+		model.addAttribute("listFrequency", listFrequency);
+		model.addAttribute("listProbability", listProbability);
+		model.addAttribute("listProbabilitySpace", listProbabilitySpace);
+		model.addAttribute("countSpace", countSpace);
+		model.addAttribute("textSizeWithoutSpaces", statisticTextsIT.textSizeWithoutSpaces());
+		model.addAttribute("textSizeWithSpaces", statisticTextsIT.textSizeWithoutSpaces() + countSpace);
+		model.addAttribute("indexMatch", statisticTextsIT.indexMatch());
+		model.addAttribute("indexMatchSpace", statisticTextsIT.indexMatchSpace());
 
+		return "greeting";
+	}
 
-        return "greeting";
-    }
+	@GetMapping("/decoding/simpleReplacement")
+	public String simpleReplacement(Model model) throws IOException
+	{
 
-    @GetMapping("/decoding")
-    public String decoding(Model model) throws IOException {
+		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+		String encodedText = statisticTextEncoded.encodedText();
 
+		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
-        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-        String text = statisticTextEncoded.encodedText();
-        model.addAttribute("encodingText", text);
-        return "decoding";
-    }
+		List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
+		List<Character> chars = statisticTextsIT.chars();
 
-    @GetMapping("/decoding/simpleReplacement")
-    public String simpleReplacement(Model model) throws IOException {
+		double frequencySymbol = new BigDecimal(
+						(double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) / (statisticTextEncoded.countSymbols())).setScale(4,
+		                                                                                                                   RoundingMode.UP
+		).doubleValue();
 
-        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
-        String encodedText = statisticTextEncoded.encodedText();
+		char[] charArray = encodedText.toCharArray();
+		for (int i = 0; i < charArray.length; i++)
+		{
+			for (int j = 0; j < chars.size(); j++)
+			{
+				if (charArray[i] == charsEncoded.get(j))
+				{
+					charArray[i] = chars.get(j);
+					break;
+				}
+			}
+		}
+		String decodedText = new String(charArray);
 
-        Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
+		model.addAttribute("encodedText", encodedText);
+		model.addAttribute("decodedText", decodedText);
+		model.addAttribute("chars", chars);
+		model.addAttribute("charsEncoded", charsEncoded);
+		model.addAttribute("frequencySymbol", frequencySymbol);
+		model.addAttribute("sortMapEncoded", sortMapEncoded);
 
-        List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
-        List<Character> chars = statisticTextsIT.chars();
+		return "simpleReplacement";
+	}
 
-        double frequencySymbol = new BigDecimal((double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) /
-                (statisticTextEncoded.countSymbols())).setScale(4, RoundingMode.UP).doubleValue();
+	@PostMapping("/decoding/replaceSymbol")
+	String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
+	                     @RequestParam("decodedText") String decodedText, Model model) throws IOException
+	{
 
-        char[] charArray = encodedText.toCharArray();
-        for (int i = 0; i < charArray.length; i++) {
-            for (int j = 0; j < chars.size(); j++) {
-                if (charArray[i] == charsEncoded.get(j)) {
-                    charArray[i] = chars.get(j);
-                    break;
-                }
-            }
-        }
-        String decodedText = new String(charArray);
+		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
 
-        model.addAttribute("decodedText", decodedText);
-        model.addAttribute("chars", chars);
-        model.addAttribute("charsEncoded", charsEncoded);
-        model.addAttribute("frequencySymbol", frequencySymbol);
+		Frequency frequency = new Frequency();
+		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
-        return "simpleReplacement";
-    }
+		//	      char[] charArray = decodedText.toCharArray();
+		//	      for (int i = 0; i < charArray.length; i++) {
+		//		        if (charArray[i] == sourceSymbol) {
+		//		        	  charArray[i] = targetSymbol;
+		//		        }
+		//	      }
+		String encodedText = statisticTextEncoded.encodedText();
 
-    @PostMapping("/decoding/replaceSymbol")
-    String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol,
-                         @RequestParam("targetSymbol") char targetSymbol,
-                         @RequestParam("decodedText") String decodedText,
-                         Model model) throws IOException {
-        StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-        StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+		Integer freqSourceSymbol = frequency.frequency(String.valueOf(sourceSymbol), decodedText);
+		Integer freqTargetSymbol = frequency.frequency(String.valueOf(targetSymbol), decodedText);
 
-        Frequency frequency = new Frequency();
-        Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
+		Character symbol1 = ' ';
+		Character symbol2 = ' ';
 
+		//ищем соответствие букв по частоте в зашифрованном тексте
+		for (Map.Entry entry : sortMapEncoded.entrySet())
+		{
+			if (freqSourceSymbol.equals(entry.getValue()))
+			{
+				symbol1 = (char) entry.getKey();
+			}
+			if (freqTargetSymbol.equals(entry.getValue()))
+			{
+				symbol2 = (char) entry.getKey();
+			}
+		}
 
-//	      char[] charArray = decodedText.toCharArray();
-//	      for (int i = 0; i < charArray.length; i++) {
-//		        if (charArray[i] == sourceSymbol) {
-//		        	  charArray[i] = targetSymbol;
-//		        }
-//	      }
-        String encodedText = statisticTextEncoded.encodedText();
+		//меняем value местами
+		sortMapEncoded.replace(symbol1, freqTargetSymbol);
+		sortMapEncoded.replace(symbol2, freqSourceSymbol);
 
-        Integer freqSourceSymbol = frequency.frequency(String.valueOf(sourceSymbol), decodedText);
-        Integer freqTargetSymbol = frequency.frequency(String.valueOf(targetSymbol), decodedText);
+		//сортируем
+		Map<Character, Integer> sortMap = new LinkedHashMap<>();
+		sortMapEncoded.entrySet()
+		              .stream()
+		              .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
+		              .forEachOrdered(x -> sortMap.put(x.getKey(), x.getValue()));
 
-        Character symbol1 = ' ';
-        Character symbol2 = ' ';
+		List<Character> chars = statisticTextsIT.chars();
+		List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
 
-        //ищем соответствие букв по частоте в зашифрованном тексте
-        for (Map.Entry entry : sortMapEncoded.entrySet()) {
-            if (freqSourceSymbol == entry.getValue()) {
-                symbol1 = (char) entry.getKey();// 'Н'
-            }
-            if (freqTargetSymbol == entry.getValue()) {
-                symbol2 = (char) entry.getKey();  // 'Е'
-            }
-        }
+		char[] charArray = encodedText.toCharArray();
+		for (int i = 0; i < charArray.length; i++)
+		{
+			for (int j = 0; j < chars.size(); j++)
+			{
+				if (charArray[i] == charsEncoded.get(j))
+				{
+					charArray[i] = chars.get(j);
+					break;
+				}
+			}
+		}
 
-        //меняем value местами
-        sortMapEncoded.replace(symbol1, freqTargetSymbol);
-        sortMapEncoded.replace(symbol2, freqSourceSymbol);
+		String json = JSON.toJSONString(sortMap);
 
-        //сортируем
-        final Map<Character, Integer> sortMap = new LinkedHashMap<>();
-        sortMapEncoded.entrySet().stream()
-                .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
-                .forEachOrdered(x -> sortMap.put(x.getKey(), x.getValue()));
-
-
-        List<Character> chars = statisticTextsIT.chars();
-        List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
-
-
-        char[] charArray = encodedText.toCharArray();
-        for (int i = 0; i < charArray.length; i++) {
-            for (int j = 0; j < chars.size(); j++) {
-                if (charArray[i] == charsEncoded.get(j)) {
-                    charArray[i] = chars.get(j);
-                    break;
-                }
-            }
-        }
-        String json = GSON.toJson(sortMap);
-
-        String newDecodedText = new String(charArray);
-        model.addAttribute("oldText", decodedText);
-        model.addAttribute("text", newDecodedText);
-        model.addAttribute("sourceSymbol", sourceSymbol);
-        model.addAttribute("targetSymbol", targetSymbol);
-        model.addAttribute("json", json);
-        return "replaceSymbol";
-    }
+		String newDecodedText = new String(charArray);
+		model.addAttribute("oldText", decodedText);
+		model.addAttribute("text", newDecodedText);
+		model.addAttribute("sourceSymbol", sourceSymbol);
+		model.addAttribute("targetSymbol", targetSymbol);
+		model.addAttribute("json", json);
+		return "replaceSymbol";
+	}
 
 	@PostMapping("/decoding/replaceSymbol2")
-	String replaceSymbol2(@RequestParam("sourceSymbol") char sourceSymbol,
-	                     @RequestParam("targetSymbol") char targetSymbol,
-	                     @RequestParam("decodedText") String decodedText,
-	                     @RequestParam("json") String json,
-	                     Model model) throws IOException {
+	String replaceSymbol2(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
+	                      @RequestParam("decodedText") String decodedText, @RequestParam("json") String json, Model model)
+					throws IOException
+	{
 
-		Map<Character, Integer> sortMapEncoded = GSON.fromJson(json, Map.class);
-
+		Map<Character, Integer> map = JSON.parseObject(json, Map.class);
+		Map<Character, Integer> sortMapEncoded = new LinkedHashMap<>();
+		for (Map.Entry entry : map.entrySet())
+		{
+			char key = entry.getKey().toString().charAt(0);
+			int value = (int) entry.getValue();
+			sortMapEncoded.put(key, value);
+		}
 
 		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
 		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
@@ -184,22 +197,22 @@ public class GreetingController {
 		//		        }
 		//	      }
 		String encodedText = statisticTextEncoded.encodedText();
-		//Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
-
 
 		Integer freqSourceSymbol = frequency.frequency(String.valueOf(sourceSymbol), decodedText);
 		Integer freqTargetSymbol = frequency.frequency(String.valueOf(targetSymbol), decodedText);
-
 
 		Character symbol1 = ' ';
 		Character symbol2 = ' ';
 
 		//ищем соответствие букв по частоте в зашифрованном тексте
-		for (Map.Entry entry : sortMapEncoded.entrySet()) {
-			if (freqSourceSymbol == entry.getValue()) {
+		for (Map.Entry entry : sortMapEncoded.entrySet())
+		{
+			if (freqSourceSymbol.equals(entry.getValue()))
+			{
 				symbol1 = (char) entry.getKey();// 'Л'
 			}
-			if (freqTargetSymbol == (int) entry.getValue()) {
+			if (freqTargetSymbol.equals(entry.getValue()))
+			{
 				symbol2 = (char) entry.getKey();  // 'У'
 			}
 		}
@@ -214,26 +227,30 @@ public class GreetingController {
 		              .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
 		              .forEachOrdered(x -> sortMap.put(x.getKey(), x.getValue()));
 
-
 		List<Character> chars = statisticTextsIT.chars();
 		List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
 
-
 		char[] charArray = encodedText.toCharArray();
-		for (int i = 0; i < charArray.length; i++) {
-			for (int j = 0; j < chars.size(); j++) {
-				if (charArray[i] == charsEncoded.get(j)) {
+		for (int i = 0; i < charArray.length; i++)
+		{
+			for (int j = 0; j < chars.size(); j++)
+			{
+				if (charArray[i] == charsEncoded.get(j))
+				{
 					charArray[i] = chars.get(j);
 					break;
 				}
 			}
 		}
 
+		String json2 = JSON.toJSONString(sortMap);
+
 		String newDecodedText = new String(charArray);
 		model.addAttribute("oldText", decodedText);
 		model.addAttribute("text", newDecodedText);
 		model.addAttribute("sourceSymbol", sourceSymbol);
 		model.addAttribute("targetSymbol", targetSymbol);
+		model.addAttribute("json", json2);
 		return "replaceSymbol2";
 	}
 }
