@@ -3,7 +3,6 @@ package com.example.WebDecoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -11,22 +10,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.alibaba.fastjson.JSONObject;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.alibaba.fastjson.JSON;
 
 @Controller
-public class GreetingController
-{
-
-	Gson GSON = new Gson();
+public class GreetingController {
 
 	@GetMapping("/greeting")
 	public String greeting(@RequestParam(name = "name", required = false) String name, Model model) throws IOException
@@ -66,10 +57,8 @@ public class GreetingController
 		List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
 		List<Character> chars = statisticTextsIT.chars();
 
-		double frequencySymbol = new BigDecimal(
-						(double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) / (statisticTextEncoded.countSymbols())).setScale(4,
-		                                                                                                                   RoundingMode.UP
-		).doubleValue();
+		double frequencySymbol = new BigDecimal((double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) /
+						                (statisticTextEncoded.countSymbols())).setScale(4, RoundingMode.UP).doubleValue();
 
 		char[] charArray = encodedText.toCharArray();
 		for (int i = 0; i < charArray.length; i++)

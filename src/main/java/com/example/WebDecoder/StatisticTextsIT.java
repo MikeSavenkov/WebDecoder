@@ -10,11 +10,10 @@ class StatisticTextsIT {
 
     private ReaderTextFile reader = new ReaderTextFile();
     private Frequency frequency = new Frequency();
-    private String text = reader.readFile("..\\..\\Desktop\\allTexts.txt", StandardCharsets.UTF_8);
+    private String text = reader.readFile("texts/allTexts.txt");
     private String textUpperCase = text.toUpperCase();
     private int countSpace = frequency.frequency(" ", textUpperCase);
     private long textSizeWithSpaces = textSizeWithoutSpaces()  + countSpace;
-
     StatisticTextsIT() throws IOException {
     }
 

@@ -7,7 +7,7 @@ import java.util.*;
 class StatisticTextEncoded {
 
     private ReaderTextFile reader = new ReaderTextFile();
-    private String encodedText = reader.readFile("..\\..\\Desktop\\encoded2.txt", StandardCharsets.UTF_8);
+    private String encodedText = reader.readFile("texts/encoded2.txt");
     private Frequency frequency = new Frequency();
 
     StatisticTextEncoded() throws IOException {
