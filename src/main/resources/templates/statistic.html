@@ -1,25 +1,14 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Getting Started: Serving Web Content</title>
+    <title>Статистика</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <style>
-        table, th, td {
-            border: 1px solid black;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 5px;
-        }
-        th {
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
-    <p th:text="'Статистика по текстам общей направленности'" />
-    <div class="container">
-        <table>
+    <h3 align="center">Статистика по текстам общей направленности </h3>
+    <div>
+        <table align="center">
             <tr>
                 <th>№</th>
                 <th>буква</th>
@@ -37,15 +26,20 @@
                 </tr>
             </th:block>
         </table>
+    </div>
+    <div class="container statistic">
         <h3 th:text="'количество пробелов: ' + ${countSpace}"></h3>
         <h3 th:text="'количество символов без пробела: ' + ${textSizeWithoutSpaces}"></h3>
         <h3 th:text="'количество символов с пробелами: ' + ${textSizeWithSpaces}"></h3>
         <h3 th:text="'индекс совпадений: ' + ${indexMatch}"></h3>
         <h3 th:text="'индекс совпадений с пробелами: ' + ${indexMatchSpace}"></h3>
+        <a href="#" th:href="@{/decoding/simpleReplacement}">
+            <button>Decoding</button>
+        </a>
+
+
+
     </div>
 
-
-
-    <a href="#" th:href="@{/decoding/simpleReplacement}">Decoding</a>
 </body>
 </html>

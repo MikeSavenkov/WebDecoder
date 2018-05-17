@@ -19,9 +19,8 @@ import com.alibaba.fastjson.JSON;
 @Controller
 public class GreetingController {
 
-	@GetMapping("/greeting")
-	public String greeting(@RequestParam(name = "name", required = false) String name, Model model) throws IOException
-	{
+	@GetMapping("/statistic")
+	public String greeting(@RequestParam(name = "name", required = false) String name, Model model) throws IOException {
 
 		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
 		List<Character> listChars = statisticTextsIT.characterList();
@@ -41,7 +40,7 @@ public class GreetingController {
 		model.addAttribute("indexMatch", statisticTextsIT.indexMatch());
 		model.addAttribute("indexMatchSpace", statisticTextsIT.indexMatchSpace());
 
-		return "greeting";
+		return "statistic";
 	}
 
 	@GetMapping("/decoding/simpleReplacement")
