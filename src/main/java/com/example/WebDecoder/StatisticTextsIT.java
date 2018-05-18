@@ -10,7 +10,7 @@ class StatisticTextsIT {
 
     private ReaderTextFile reader = new ReaderTextFile();
     private Frequency frequency = new Frequency();
-    private String text = reader.readFile("texts/allTexts.txt");
+    private String text = reader.readFile("texts/allTextsDuplicate.txt");
     private String textUpperCase = text.toUpperCase();
     private int countSpace = frequency.frequency(" ", textUpperCase);
     private long textSizeWithSpaces = textSizeWithoutSpaces()  + countSpace;
