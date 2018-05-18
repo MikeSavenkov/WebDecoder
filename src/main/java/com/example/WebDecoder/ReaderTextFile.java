@@ -12,7 +12,7 @@ class ReaderTextFile {
 
         ClassLoader classLoader = new ReaderTextFile().getClass().getClassLoader();
         File file = new File(classLoader.getResource(path).getFile());
-        return new String(Files.readAllBytes(file.toPath()));
+        return new String(Files.readAllBytes(file.toPath().toAbsolutePath()));
 //        byte[] encoded = Files.readAllBytes(Paths.get(path));
 //        return new String(encoded, encoding);
 
