@@ -9,7 +9,6 @@
         <p th:text="${oldText}"></p>
         <h3>текст после замены [[${sourceSymbol}]] на [[${targetSymbol}]]</h3>
         <p th:text="${text}"></p>
-        <a href="#" th:href="@{/decoding/simpleReplacement}">Back</a>
 
         <form method="POST" action="#" th:action="@{/decoding/replaceSymbol2}">
 
@@ -17,7 +16,8 @@
             <input type="text" name="targetSymbol" placeholder="Замена"/>
             <input type="hidden" name="decodedText" th:value="${text}"/>
             <input type="hidden" name="json" th:value="${json}"/>
-            <button type="submit" th:text="Ok"/>
+            <button type="submit" th:text="Применить"/>
+            <input type="button" value="Назад" onclick="javascript:window.location='/decoding/simpleReplacement'" />
 
         </form>
 
