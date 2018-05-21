@@ -83,8 +83,7 @@ public class GreetingController {
 
 	@PostMapping("/decoding/replaceSymbol")
 	String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
-	                     @RequestParam("decodedText") String decodedText, Model model) throws IOException
-	{
+	                     @RequestParam("decodedText") String decodedText, Model model) throws IOException {
 
 		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
 		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
@@ -107,14 +106,11 @@ public class GreetingController {
 		Character symbol2 = ' ';
 
 		//ищем соответствие букв по частоте в зашифрованном тексте
-		for (Map.Entry entry : sortMapEncoded.entrySet())
-		{
-			if (freqSourceSymbol.equals(entry.getValue()))
-			{
+		for (Map.Entry entry : sortMapEncoded.entrySet()) {
+			if (freqSourceSymbol.equals(entry.getValue())) {
 				symbol1 = (char) entry.getKey();
 			}
-			if (freqTargetSymbol.equals(entry.getValue()))
-			{
+			if (freqTargetSymbol.equals(entry.getValue())) {
 				symbol2 = (char) entry.getKey();
 			}
 		}
@@ -134,12 +130,9 @@ public class GreetingController {
 		List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
 
 		char[] charArray = encodedText.toCharArray();
-		for (int i = 0; i < charArray.length; i++)
-		{
-			for (int j = 0; j < chars.size(); j++)
-			{
-				if (charArray[i] == charsEncoded.get(j))
-				{
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
 					charArray[i] = chars.get(j);
 					break;
 				}
@@ -160,13 +153,11 @@ public class GreetingController {
 	@PostMapping("/decoding/replaceSymbol2")
 	String replaceSymbol2(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
 	                      @RequestParam("decodedText") String decodedText, @RequestParam("json") String json, Model model)
-					throws IOException
-	{
+					throws IOException {
 
 		Map<Character, Integer> map = JSON.parseObject(json, Map.class);
 		Map<Character, Integer> sortMapEncoded = new LinkedHashMap<>();
-		for (Map.Entry entry : map.entrySet())
-		{
+		for (Map.Entry entry : map.entrySet()) {
 			char key = entry.getKey().toString().charAt(0);
 			int value = (int) entry.getValue();
 			sortMapEncoded.put(key, value);
@@ -191,14 +182,11 @@ public class GreetingController {
 		Character symbol2 = ' ';
 
 		//ищем соответствие букв по частоте в зашифрованном тексте
-		for (Map.Entry entry : sortMapEncoded.entrySet())
-		{
-			if (freqSourceSymbol.equals(entry.getValue()))
-			{
+		for (Map.Entry entry : sortMapEncoded.entrySet()) {
+			if (freqSourceSymbol.equals(entry.getValue())) {
 				symbol1 = (char) entry.getKey();// 'Л'
 			}
-			if (freqTargetSymbol.equals(entry.getValue()))
-			{
+			if (freqTargetSymbol.equals(entry.getValue())) {
 				symbol2 = (char) entry.getKey();  // 'У'
 			}
 		}
@@ -217,12 +205,9 @@ public class GreetingController {
 		List<Character> charsEncoded = new ArrayList<>(sortMap.keySet());
 
 		char[] charArray = encodedText.toCharArray();
-		for (int i = 0; i < charArray.length; i++)
-		{
-			for (int j = 0; j < chars.size(); j++)
-			{
-				if (charArray[i] == charsEncoded.get(j))
-				{
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
 					charArray[i] = chars.get(j);
 					break;
 				}
