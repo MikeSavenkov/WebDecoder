@@ -44,8 +44,7 @@ public class GreetingController {
 	}
 
 	@GetMapping("/decoding/simpleReplacement")
-	public String simpleReplacement(Model model) throws IOException
-	{
+	public String simpleReplacement(Model model) throws IOException {
 
 		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
 		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
@@ -78,7 +77,6 @@ public class GreetingController {
 		model.addAttribute("chars", chars);
 		model.addAttribute("charsEncoded", charsEncoded);
 		model.addAttribute("frequencySymbol", frequencySymbol);
-		model.addAttribute("sortMapEncoded", sortMapEncoded);
 
 		return "simpleReplacement";
 	}

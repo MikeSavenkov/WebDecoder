@@ -27,7 +27,7 @@
             </th:block>
         </table>
     </div>
-    <div class="container statistic">
+    <div style="position: relative; padding: 5px; bottom: 900px; padding-left: 30px">
         <h3 th:text="'количество пробелов: ' + ${countSpace}"></h3>
         <h3 th:text="'количество символов без пробела: ' + ${textSizeWithoutSpaces}"></h3>
         <h3 th:text="'количество символов с пробелами: ' + ${textSizeWithSpaces}"></h3>
@@ -36,9 +36,6 @@
         <a href="#" th:href="@{/decoding/simpleReplacement}">
             <button>Расшифровать</button>
         </a>
-
-
-
     </div>
 
 </body>

@@ -6,31 +6,29 @@
   <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
-    <h3>массив букв в порядке убывания по частоте в текстах общей направленности</h3>
-    <p th:text="${chars}" />
-    <h3>массив букв в порядке убывания по частоте в зашифрованном тексте</h3>
-    <p th:text="${charsEncoded}" />
-
-    <h3></h3>
+    <h3>массивы букв в порядке убывания по частоте в зашифрованном тексте и текстах общей направленности</h3>
     <div>
-        <table align="center">
+        <table>
             <tr>
                 <th>№</th>
-                <th>ИТ тексты</th>
-                <th>шифр текст</th>
+                <th:block th:each="listChars, stat : ${chars}">
+                    <td th:text="${stat.count}"></td>
+                </th:block>
             </tr>
-            <th:block th:each="listChars, stat : ${chars}">
-                <tr>
-                    <td th:text="${stat.count}"> </td>
-                    <td th:text="${chars.get(stat.index)}"> </td>
-                    <td th:text="${charsEncoded.get(stat.index)}"> </td>
-                </tr>
-            </th:block>
+            <tr>
+                <th>ИТ тексты</th>
+                <th:block th:each="char, i : ${chars}">
+                    <td th:text="${chars.get(i.index)}"></td>
+                </th:block>
+            </tr>
+            <tr>
+                <th>шифр текст</th>
+                <th:block th:each="char, i : ${charsEncoded}">
+                    <td th:text="${charsEncoded.get(i.index)}"></td>
+                </th:block>
+            </tr>
         </table>
     </div>
-
-    <h3>Map в зашифрованном тексте</h3>
-    <p th:text="${sortMapEncoded}" />
 
     <h3>процент наиболее часто встречающейся буквы</h3>
     <p th:text="${frequencySymbol} + '%'" />
