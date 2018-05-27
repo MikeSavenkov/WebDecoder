@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class ReaderTextFile {
@@ -17,5 +18,12 @@ class ReaderTextFile {
 //        return new String(encoded, encoding);
 
     }
+
+//    String path(String str) {
+//
+//        Path path = Paths.get(str);
+//        String s = path.toAbsolutePath().toString();
+//        return s;
+//    }
 
 }

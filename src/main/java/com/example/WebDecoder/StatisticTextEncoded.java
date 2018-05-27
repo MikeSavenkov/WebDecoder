@@ -1,10 +1,10 @@
 package com.example.WebDecoder;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 class StatisticTextEncoded {
+
 
     private ReaderTextFile reader = new ReaderTextFile();
     private String encodedText = reader.readFile("texts/encoded2.txt");

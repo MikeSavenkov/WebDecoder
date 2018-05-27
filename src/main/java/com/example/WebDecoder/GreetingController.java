@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +20,17 @@ import com.alibaba.fastjson.JSON;
 @Controller
 public class GreetingController {
 
-	@GetMapping("/statistic")
-	public String greeting(@RequestParam(name = "name", required = false) String name, Model model) throws IOException {
+	private StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
+	private StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+	private Frequency frequency = new Frequency();
 
-		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
+	public GreetingController() throws IOException {
+	}
+
+	@GetMapping("/statistic")
+	public String greeting(@RequestParam(name = "name", required = false) String name,
+	                       Model model) throws IOException {
+
 		List<Character> listChars = statisticTextsIT.characterList();
 		List<Integer> listFrequency = statisticTextsIT.frequencyList();
 		List<Double> listProbability = statisticTextsIT.probabilityList();
@@ -46,10 +54,7 @@ public class GreetingController {
 	@GetMapping("/decoding/simpleReplacement")
 	public String simpleReplacement(Model model) throws IOException {
 
-		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
 		String encodedText = statisticTextEncoded.encodedText();
-
 		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
 		List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
@@ -59,12 +64,82 @@ public class GreetingController {
 						                (statisticTextEncoded.countSymbols())).setScale(4, RoundingMode.UP).doubleValue();
 
 		char[] charArray = encodedText.toCharArray();
-		for (int i = 0; i < charArray.length; i++)
-		{
-			for (int j = 0; j < chars.size(); j++)
-			{
-				if (charArray[i] == charsEncoded.get(j))
-				{
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
+					charArray[i] = chars.get(j);
+					break;
+				}
+			}
+		}
+		String decodedText = new String(charArray);
+
+		model.addAttribute("encodedText", encodedText);
+		model.addAttribute("decodedText", decodedText);
+		model.addAttribute("chars", chars);
+		model.addAttribute("charsEncoded", charsEncoded);
+		model.addAttribute("frequencySymbol", frequencySymbol);
+		return "simpleReplacement";
+	}
+
+	@PostMapping("/resultMap")
+	public String addToList(@RequestParam("key") String key,
+	                        @RequestParam("decodedText") String decodedText,
+	                        Model model) throws IOException {
+
+		Map<Character, Character> mapKey = new HashMap<>();
+		Map<Character, Character> newMapp = new HashMap<>();
+		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
+		List<Character> charsIT = statisticTextsIT.chars();
+
+		int j = 0;
+		for (Map.Entry entry : sortMapEncoded.entrySet()) {
+			newMapp.put((Character) entry.getKey(), charsIT.get(j));
+			j++;
+		}
+
+		char[] chars = key.toCharArray();
+		char chrEnc = ' ';
+
+		//ищем соответствие букв по частоте в зашифрованном тексте
+		for (Map.Entry entry : sortMapEncoded.entrySet()) {
+			for (int i = 0; i < chars.length; i++) {
+				Integer freqDecChr = frequency.frequency(String.valueOf(chars[i]), decodedText);
+				if (freqDecChr.equals(entry.getValue())) {
+					chrEnc = (char) entry.getKey();
+					mapKey.put(chrEnc, chars[i]);
+					newMapp.remove(chrEnc, chars[i]);
+					break;
+				}
+			}
+		}
+		//String mapKeys = JSON.toJSONString(mapKey);
+		//String newMap = JSON.toJSONString(mapKey);
+
+		model.addAttribute("mapKey", mapKey);
+		model.addAttribute("newMapp", newMapp);
+		return "resultMap";
+
+	}
+
+	@PostMapping("/decoding/simpleReplacement2")
+	public String simpleReplacement2(Model model,
+	                                 @RequestParam("newMap") String newMap,
+	                                 @RequestParam("mapKeys") String mapKeys) {
+
+		String encodedText = statisticTextEncoded.encodedText();
+		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
+
+		List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
+		List<Character> chars = statisticTextsIT.chars();
+
+		double frequencySymbol = new BigDecimal((double) (sortMapEncoded.get(charsEncoded.get(0)) * 100) /
+				                                        (statisticTextEncoded.countSymbols())).setScale(4, RoundingMode.UP).doubleValue();
+
+		char[] charArray = encodedText.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
 					charArray[i] = chars.get(j);
 					break;
 				}
@@ -78,17 +153,16 @@ public class GreetingController {
 		model.addAttribute("charsEncoded", charsEncoded);
 		model.addAttribute("frequencySymbol", frequencySymbol);
 
-		return "simpleReplacement";
+
+		return "/decoding/simpleReplacement2";
 	}
 
 	@PostMapping("/decoding/replaceSymbol")
-	String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
-	                     @RequestParam("decodedText") String decodedText, Model model) throws IOException {
+	String replaceSymbol(@RequestParam("sourceSymbol") char sourceSymbol,
+	                     @RequestParam("targetSymbol") char targetSymbol,
+	                     @RequestParam("decodedText") String decodedText,
+	                     Model model) throws IOException {
 
-		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
-
-		Frequency frequency = new Frequency();
 		Map<Character, Integer> sortMapEncoded = statisticTextEncoded.encodedMap();
 
 		//	      char[] charArray = decodedText.toCharArray();
@@ -151,9 +225,11 @@ public class GreetingController {
 	}
 
 	@PostMapping("/decoding/replaceSymbol2")
-	String replaceSymbol2(@RequestParam("sourceSymbol") char sourceSymbol, @RequestParam("targetSymbol") char targetSymbol,
-	                      @RequestParam("decodedText") String decodedText, @RequestParam("json") String json, Model model)
-					throws IOException {
+	String replaceSymbol2(@RequestParam("sourceSymbol") char sourceSymbol,
+	                      @RequestParam("targetSymbol") char targetSymbol,
+	                      @RequestParam("decodedText") String decodedText,
+	                      @RequestParam("json") String json,
+	                      Model model) throws IOException {
 
 		Map<Character, Integer> map = JSON.parseObject(json, Map.class);
 		Map<Character, Integer> sortMapEncoded = new LinkedHashMap<>();
@@ -162,10 +238,6 @@ public class GreetingController {
 			int value = (int) entry.getValue();
 			sortMapEncoded.put(key, value);
 		}
-
-		StatisticTextEncoded statisticTextEncoded = new StatisticTextEncoded();
-		StatisticTextsIT statisticTextsIT = new StatisticTextsIT();
-		Frequency frequency = new Frequency();
 
 		//	      char[] charArray = decodedText.toCharArray();
 		//	      for (int i = 0; i < charArray.length; i++) {

@@ -1,8 +1,8 @@
 package com.example.WebDecoder;
 
-public class Frequency {
+class Frequency {
 
-    public int frequency(String symbol, String file) {
+    int frequency(String symbol, String file) {
 
         int lastIndex = 0;
         int count = 0;

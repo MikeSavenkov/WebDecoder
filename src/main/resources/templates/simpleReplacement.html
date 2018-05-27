@@ -16,15 +16,15 @@
                 </th:block>
             </tr>
             <tr>
-                <th>ИТ тексты</th>
-                <th:block th:each="char, i : ${chars}">
-                    <td th:text="${chars.get(i.index)}"></td>
-                </th:block>
-            </tr>
-            <tr>
                 <th>шифр текст</th>
                 <th:block th:each="char, i : ${charsEncoded}">
                     <td th:text="${charsEncoded.get(i.index)}"></td>
+                </th:block>
+            </tr>
+            <tr>
+                <th>ИТ тексты</th>
+                <th:block th:each="char, i : ${chars}">
+                    <td th:text="${chars.get(i.index)}"></td>
                 </th:block>
             </tr>
         </table>
@@ -46,6 +46,14 @@
         <input type="hidden" name="decodedText" th:value="${decodedText}"/>
         <button type="submit" th:text="Применить"/>
         <input type="button" value="Назад" onclick="javascript:window.location='/statistic'"/>
+    </form>
+
+
+    <h3>Введите букву которую нужно добавить в ключ</h3>
+    <form method="POST" action="#" th:action="@{/resultMap}">
+        <input type="text" name="key" placeholder="буква"/>
+        <input type="hidden" name="decodedText" th:value="${decodedText}"/>
+        <button type="submit" th:text="Применить"/>
     </form>
 
 </body>
