@@ -39,20 +39,11 @@
     <h3>Расшифрованный текст после замены букв</h3>
     <p th:text="${decodedText}" />
 
-    <form name="form" method="POST" action="#" th:action="@{/decoding/replaceSymbol}">
-
-        <input type="text" name="sourceSymbol" placeholder="Исходная буква"/>
-        <input type="text" name="targetSymbol" placeholder="Замена"/>
-        <input type="hidden" name="decodedText" th:value="${decodedText}"/>
-        <button type="submit" th:text="Применить"/>
-        <input type="button" value="Назад" onclick="javascript:window.location='/statistic'"/>
-    </form>
-
-
-    <h3>Введите букву которую нужно добавить в ключ</h3>
+    <h3>Введите буквы которую нужно добавить в ключ</h3>
     <form method="POST" action="#" th:action="@{/resultMap}">
-        <input type="text" name="key" placeholder="буква"/>
+        <input type="text" name="key" placeholder="буквы"/>
         <input type="hidden" name="decodedText" th:value="${decodedText}"/>
+        <input type="hidden" name="encodedText" th:value="${encodedText}"/>
         <button type="submit" th:text="Применить"/>
     </form>
 

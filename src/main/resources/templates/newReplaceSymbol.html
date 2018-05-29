@@ -1,55 +1,54 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>key</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+    <title>Decoding</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
 </head>
 <body>
-
     <h3>Ключ</h3>
-        <div>
-            <table>
-                  <tr>
-                      <th>№</th>
-                      <th:block th:each="map, i : ${mapKey}">
-                          <td th:text="${i.count}"></td>
-                      </th:block>
-                  </tr>
-                  <tr>
-                      <th>шифр текст</th>
-                      <th:block th:each="map, i : ${mapKey}">
-                          <td th:text="${map.key}"></td>
-                      </th:block>
-                  </tr>
-                  <tr>
-                    <th>ИТ тексты</th>
-                    <th:block th:each="map, i : ${mapKey}">
-                        <td th:text="${map.value}"></td>
-                    </th:block>
-                </tr>
-            </table>
-        </div>
-    <h3>Оставшиеся</h3>
     <div>
         <table>
             <tr>
                 <th>№</th>
-                <th:block th:each="map, i : ${newMap}">
+                <th:block th:each="map, i : ${mapKeys}">
                     <td th:text="${i.count}"></td>
                 </th:block>
-              </tr>
+            </tr>
               <tr>
                   <th>шифр текст</th>
-                  <th:block th:each="map, i : ${newMap}">
+                  <th:block th:each="map, i : ${mapKeys}">
                       <td th:text="${map.key}"></td>
                   </th:block>
               </tr>
               <tr>
                   <th>ИТ тексты</th>
-                  <th:block th:each="map, i : ${newMap}">
+                  <th:block th:each="map, i : ${mapKeys}">
                       <td th:text="${map.value}"></td>
                   </th:block>
+            </tr>
+        </table>
+    </div>
+    <h3>Оставшиеся</h3>
+    <div>
+        <table>
+            <tr>
+                <th>№</th>
+                <th:block th:each="map, i : ${newMapp}">
+                    <td th:text="${i.count}"></td>
+                </th:block>
+            </tr>
+            <tr>
+                <th>шифр текст</th>
+                <th:block th:each="map, i : ${newMapp}">
+                    <td th:text="${map.key}"></td>
+                </th:block>
+            </tr>
+            <tr>
+                <th>ИТ тексты</th>
+                <th:block th:each="map, i : ${newMapp}">
+                    <td th:text="${map.value}"></td>
+                </th:block>
             </tr>
         </table>
     </div>
