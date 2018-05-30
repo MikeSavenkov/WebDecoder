@@ -204,17 +204,118 @@ public class GreetingController {
 
 		decodedText = new String(charArray);
 
-		String jsonMapKey1 = JSON.toJSONString(mapKey);
-		String jsonNewMap1 = JSON.toJSONString(newMap);
+		String jsonMapKey1 = JSON.toJSONString(mapKeys);
+		String jsonNewMap1 = JSON.toJSONString(newMapp);
+		String jsonSortMap = JSON.toJSONString(sortMap);
 
 		model.addAttribute("encodedText", encodedText);
 		model.addAttribute("decodedText", decodedText);
 		model.addAttribute("jsonNewMap1", jsonNewMap1);
 		model.addAttribute("jsonMapKey1", jsonMapKey1);
+		model.addAttribute("jsonSortMap", jsonSortMap);
 		model.addAttribute("newMapp", newMapp);
 		model.addAttribute("mapKeys", mapKeys);
 
 		return "newReplaceSymbol";
+	}
+
+	@PostMapping("/decoding/newReplaceSymbol2")
+	public String newReplaceSymbol2(Model model,
+	                               @RequestParam("jsonNewMap") String jsonNewMap,
+	                               @RequestParam("jsonMapKey") String jsonMapKey,
+	                               @RequestParam("decodedText") String decodedText,
+	                               @RequestParam("sourceSymbol") String sourceSymbol,
+	                               @RequestParam("targetSymbol") String targetSymbol,
+	                               @RequestParam("jsonSortMap") String jsonSortMap) {
+
+		Map<Character, Character> mapKey = JSON.parseObject(jsonMapKey, Map.class);
+		Map<Character, Character> mapKeys = new LinkedHashMap<>();
+		for (Map.Entry entry : mapKey.entrySet()) {
+			char key = entry.getKey().toString().charAt(0);
+			char value = entry.getValue().toString().charAt(0);
+			mapKeys.put(key, value);
+		}
+
+		Map<Character, Character> newMap = JSON.parseObject(jsonNewMap, Map.class);
+		Map<Character, Character> newMapp = new LinkedHashMap<>();
+		for (Map.Entry entry : newMap.entrySet()) {
+			char key = entry.getKey().toString().charAt(0);
+			char value = entry.getValue().toString().charAt(0);
+			newMapp.put(key, value);
+		}
+
+		Map<Character, Integer> sortMap = JSON.parseObject(jsonSortMap, Map.class);
+		Map<Character, Integer> sortMapEncoded = new LinkedHashMap<>();
+		for (Map.Entry entry : sortMap.entrySet()) {
+			char key = entry.getKey().toString().charAt(0);
+			int value = (int) entry.getValue();
+			sortMapEncoded.put(key, value);
+		}
+		//работаем с newMapp и mapKeys
+		String encodedText = statisticTextEncoded.encodedText();
+
+		Integer freqSourceSymbol = frequency.frequency(String.valueOf(sourceSymbol), decodedText);
+		Integer freqTargetSymbol = frequency.frequency(String.valueOf(targetSymbol), decodedText);
+
+		Character symbol1 = ' ';
+		Character symbol2 = ' ';
+
+		//ищем соответствие букв по частоте в зашифрованном тексте
+		for (Map.Entry entry : sortMapEncoded.entrySet()) {
+			if (freqSourceSymbol.equals(entry.getValue())) {
+				symbol1 = (char) entry.getKey();
+			}
+			if (freqTargetSymbol.equals(entry.getValue())) {
+				symbol2 = (char) entry.getKey();
+			}
+		}
+
+		//меняем value местами
+		sortMapEncoded.replace(symbol1, freqTargetSymbol);
+		sortMapEncoded.replace(symbol2, freqSourceSymbol);
+
+		//сортируем
+		Map<Character, Integer> sortedMap = new LinkedHashMap<>();
+		sortMapEncoded.entrySet()
+		              .stream()
+		              .sorted(Map.Entry.<Character, Integer>comparingByValue().reversed())
+		              .forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+
+		List<Character> charsEncoded = new ArrayList<>(sortedMap.keySet());
+		List<Character> chars = statisticTextsIT.chars();
+
+		char[] charArray = encodedText.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
+					charArray[i] = chars.get(j);
+					break;
+				}
+			}
+		}
+
+		mapKeys.put(symbol1, targetSymbol.charAt(0));
+		mapKeys.put(symbol2, sourceSymbol.charAt(0));
+
+		newMapp.remove(symbol1, sourceSymbol.charAt(0));
+		newMapp.remove(symbol2, targetSymbol.charAt(0));
+
+		decodedText = new String(charArray);
+
+		String jsonMapKey1 = JSON.toJSONString(mapKeys);
+		String jsonNewMap1 = JSON.toJSONString(newMapp);
+		String jsonSortMapp = JSON.toJSONString(sortedMap);
+
+		model.addAttribute("encodedText", encodedText);
+		model.addAttribute("decodedText", decodedText);
+		model.addAttribute("jsonNewMap", jsonNewMap1);
+		model.addAttribute("jsonMapKey", jsonMapKey1);
+		model.addAttribute("jsonSortMap", jsonSortMapp);
+		model.addAttribute("newMapp", newMapp);
+		model.addAttribute("mapKeys", mapKeys);
+		//model.addAttribute("sortMap", sortMap);
+
+		return "newReplaceSymbol2";
 	}
 
 	@PostMapping("/decoding/replaceSymbol")

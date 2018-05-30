@@ -15,17 +15,17 @@
                     <td th:text="${i.count}"></td>
                 </th:block>
             </tr>
-              <tr>
-                  <th>шифр текст</th>
-                  <th:block th:each="map, i : ${mapKeys}">
-                      <td th:text="${map.key}"></td>
-                  </th:block>
-              </tr>
-              <tr>
-                  <th>ИТ тексты</th>
-                  <th:block th:each="map, i : ${mapKeys}">
-                      <td th:text="${map.value}"></td>
-                  </th:block>
+            <tr>
+                <th>шифр текст</th>
+                <th:block th:each="map, i : ${mapKeys}">
+                    <td th:text="${map.key}"></td>
+                </th:block>
+            </tr>
+            <tr>
+                <th>ИТ тексты</th>
+                <th:block th:each="map, i : ${mapKeys}">
+                    <td th:text="${map.value}"></td>
+                </th:block>
             </tr>
         </table>
     </div>
@@ -65,8 +65,8 @@
         <input type="text" name="sourceSymbol" placeholder="Исходная буква"/>
         <input type="text" name="targetSymbol" placeholder="Замена"/>
         <input type="hidden" name="decodedText" th:value="${decodedText}"/>
-        <input type="hidden" name="jsonMapKey" th:value="${jsonMapKey1}"/>
-        <input type="hidden" name="jsonNewMap" th:value="${jsonNewMap1}"/>
+        <input type="hidden" name="jsonMapKey" th:value="${jsonMapKey}"/>
+        <input type="hidden" name="jsonNewMap" th:value="${jsonNewMap}"/>
         <input type="hidden" name="jsonSortMap" th:value="${jsonSortMap}"/>
         <button type="submit" th:text="Применить"/>
         <!--<input type="button" value="Назад" onclick="javascript:window.location='/statistic'"/>-->
