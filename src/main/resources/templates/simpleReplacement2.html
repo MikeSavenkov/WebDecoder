@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Decoding</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<h3>массивы букв в порядке убывания по частоте в зашифрованном тексте и текстах общей направленности</h3>
+<div>
+    <table>
+        <tr>
+            <th>№</th>
+            <th:block th:each="listChars, stat : ${chars}">
+                <td th:text="${stat.count}"></td>
+            </th:block>
+        </tr>
+        <tr>
+            <th>шифр текст</th>
+            <th:block th:each="char, i : ${charsEncoded}">
+                <td th:text="${charsEncoded.get(i.index)}"></td>
+            </th:block>
+        </tr>
+        <tr>
+            <th>ИТ тексты</th>
+            <th:block th:each="char, i : ${chars}">
+                <td th:text="${chars.get(i.index)}"></td>
+            </th:block>
+        </tr>
+    </table>
+</div>
+
+
+<h3>Зашифрованный текст</h3>
+<p style="word-wrap: break-word" th:text="${encodedText}" />
+
+<h3>Расшифрованный текст после замены букв</h3>
+<p th:text="${decodedText}" />
+
+<h3>Введите буквы которую нужно добавить в ключ</h3>
+<form method="POST" action="#" th:action="@{/resultMap}">
+    <input type="text" name="key" placeholder="буквы"/>
+    <input type="hidden" name="decodedText" th:value="${decodedText}"/>
+    <input type="hidden" name="encodedText" th:value="${encodedText}"/>
+    <button type="submit" th:text="Применить"/>
+</form>
+
+</body>
+</html>

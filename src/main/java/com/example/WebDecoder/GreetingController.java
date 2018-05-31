@@ -82,6 +82,68 @@ public class GreetingController {
 		return "simpleReplacement";
 	}
 
+	@GetMapping("/decoding/simpleReplacement2")
+	public String simpleReplacement2(Model model) throws IOException {
+
+		String encodedText = statisticTextEncoded.encodedText();
+
+		List<Character> charsEncoded = statisticTextEncoded.charsEncoded();
+		//List<Character> chars = statisticTextsIT.chars();
+		List<Character> chars = new ArrayList<>();
+
+		chars.add(' ');
+		chars.add('О');
+		chars.add('И');
+		chars.add('Е');
+		chars.add('Н');
+		chars.add('С');
+		chars.add('Т');
+		chars.add('А');
+		chars.add('Р');
+		chars.add('Л');
+		chars.add('В');
+		chars.add('М');
+		chars.add('К');
+		chars.add('П');
+		chars.add('Д');
+		chars.add('У');
+		chars.add('З');
+		chars.add('Ы');
+		chars.add('Я');
+		chars.add('Х');
+		chars.add('Ь');
+		chars.add('Б');
+		chars.add('Г');
+		chars.add('Ц');
+		chars.add('Щ');
+		chars.add('Ч');
+		chars.add('Ф');
+		chars.add('Ю');
+		chars.add('Ш');
+		chars.add('Ж');
+		chars.add('Ш');
+		chars.add('Э');
+		chars.add('Ъ');
+
+
+		char[] charArray = encodedText.toCharArray();
+		for (int i = 0; i < charArray.length; i++) {
+			for (int j = 0; j < chars.size(); j++) {
+				if (charArray[i] == charsEncoded.get(j)) {
+					charArray[i] = chars.get(j);
+					break;
+				}
+			}
+		}
+		String decodedText = new String(charArray);
+
+		model.addAttribute("encodedText", encodedText);
+		model.addAttribute("decodedText", decodedText);
+		model.addAttribute("chars", chars);
+		model.addAttribute("charsEncoded", charsEncoded);
+		return "simpleReplacement2";
+	}
+
 	@PostMapping("/resultMap")
 	public String addToList(@RequestParam("key") String key,
 	                        @RequestParam("encodedText") String encodedText,
